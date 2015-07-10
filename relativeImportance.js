@@ -3,14 +3,25 @@ $(document).ready(function(){
     var canvasHTML = $('#tutorial')[0];
     var ctx = canvasHTML.getContext('2d');
     var triangle = new Triangle(200, canvasHTML.width);
+    var pressed = false;
     render();
     
+    canvasHTML.addEventListener('mouseup', function(){
+        pressed = false;
+    });
+    canvasHTML.addEventListener('mousedown', function(){
+        pressed = true;
+    });
     canvasHTML.addEventListener('mousedown', render, true);
-    canvasHTML.addEventListener('mouseup', function(ev) {
-        
+    canvasHTML.addEventListener('mousemove', function(ev) {
+        if (!pressed){
+            return;   
+        }
+        render(ev);
     });
     
     function render(ev){
+        pressed = true;
         var mouseClick = getMousePosition(ev);
         var path = triangle.getPath();
         var collision = ctx.isPointInPath(path, mouseClick.x, mouseClick.y)
