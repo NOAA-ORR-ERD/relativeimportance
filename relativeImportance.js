@@ -2,6 +2,7 @@ $(document).ready(function(){
     var canvas = $('#tutorial');
     var canvasHTML = $('#tutorial')[0];
     var ctx = canvasHTML.getContext('2d');
+    var offset = canvas.offset();
     var triangle = new Triangle(200, canvasHTML.width, 'column', 'surface', 'shoreline');
     var pressed = false;
     render();
@@ -34,7 +35,7 @@ $(document).ready(function(){
     function drawCircle(ev){
         var coords; 
         if (ev === undefined){
-            coords = {x: canvasHTML.width / 2, y: canvasHTML.width / 2};    
+            coords = {x: canvasHTML.width / 2 - offset.left, y: canvasHTML.width / 2 - offset.top};    
         } else {
             coords = getMousePosition(ev);
         }
@@ -42,7 +43,7 @@ $(document).ready(function(){
         ctx.beginPath();
         ctx.arc(coords.x, coords.y, 5, 0, Math.PI * 2, true);
         ctx.closePath();
-        ctx.stroke();
+        ctx.fill();
     }
     
     function getMousePosition(ev){
@@ -63,8 +64,7 @@ $(document).ready(function(){
     function Triangle(sideLength, boxSize, pointOneText, pointTwoText, pointThreeText){
       this.sideLength = sideLength;
       this.boxSize = boxSize;
-        
-      var offset = canvas.offset();
+      
       var triHeight = sideLength * (Math.sqrt(3) / 2);
       var vertTrans = (boxSize - triHeight) / 2 - offset.top;
       var horizTrans = (boxSize - sideLength) / 2 - offset.left;
@@ -90,15 +90,18 @@ $(document).ready(function(){
       };
        
       this.drawText = function(){
-          ctx.font = "14px san-serif";
-          ctx.strokeText(pointOneText, point1.x - 19, point1.y - 10);
-          ctx.strokeText(pointTwoText, point2.x - 15, point2.y + 15);
-          ctx.strokeText(pointThreeText, point3.x - 15, point3.y + 15);
+          var scalingFact = 1 / 10;
+          var fontSize = (scalingFact * sideLength);
+          ctx.font = fontSize + "px san-serif";
+          ctx.fillText(pointOneText, point1.x - textMidPoint(pointOneText), point1.y - fontSize / 2);
+          ctx.fillText(pointTwoText, point2.x - textMidPoint(pointTwoText), point2.y + fontSize);
+          ctx.fillText(pointThreeText, point3.x - textMidPoint(pointThreeText), point3.y + fontSize);
       };
         
-      this.getPoints = function(){
-          return this.vertices;
-      };
+      function textMidPoint(text){
+          return ctx.measureText(text).width / 2;      
+      }
+        
     }
     
 });
