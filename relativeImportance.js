@@ -34,8 +34,9 @@ $(document).ready(function(){
     
     function drawCircle(ev){
         var coords;
+        var initialY = triangle.vertTrans + triangle.sideLength * (Math.sqrt(3) / 3);
         if (ev === undefined){
-            coords = {x: canvasHTML.width / 2 - offset.left, y: canvasHTML.width / 2 - offset.top};
+            coords = {x: canvasHTML.width / 2 - offset.left, y: initialY - offset.top};
         } else {
             coords = getMousePosition(ev);
         }
@@ -65,13 +66,13 @@ $(document).ready(function(){
       this.sideLength = sideLength;
       this.boxSize = boxSize;
       
-      var triHeight = sideLength * (Math.sqrt(3) / 2);
-      var vertTrans = (boxSize - triHeight) / 2 - offset.top;
+      this.triHeight = sideLength * (Math.sqrt(3) / 2);
+      this.vertTrans = (boxSize - this.triHeight) / 2 - offset.top;
       var horizTrans = (boxSize - sideLength) / 2 - offset.left;
         
-      var point1 = {x: boxSize / 2 - offset.left, y: vertTrans};
-      var point2 = {x: horizTrans, y: vertTrans + triHeight};
-      var point3 = {x: horizTrans + sideLength, y: vertTrans + triHeight};
+      var point1 = {x: boxSize / 2 - offset.left, y: this.vertTrans};
+      var point2 = {x: horizTrans, y: this.vertTrans + this.triHeight};
+      var point3 = {x: horizTrans + sideLength, y: this.vertTrans + this.triHeight};
         
       this.getPath = function(){
           var path = new Path2D();
@@ -92,7 +93,7 @@ $(document).ready(function(){
       this.drawText = function(){
           var scalingFact = 1 / 10;
           var fontSize = (scalingFact * sideLength);
-          ctx.font = fontSize + "px san-serif";
+          ctx.font = fontSize + "px arial";
           ctx.fillText(pointOneText, point1.x - textMidPoint(pointOneText), point1.y - fontSize / 2);
           ctx.fillText(pointTwoText, point2.x - textMidPoint(pointTwoText), point2.y + fontSize);
           ctx.fillText(pointThreeText, point3.x - textMidPoint(pointThreeText), point3.y + fontSize);
