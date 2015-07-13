@@ -16,7 +16,7 @@ $(document).ready(function(){
     canvasHTML.addEventListener('mousedown', render, true);
     canvasHTML.addEventListener('mousemove', function(ev) {
         if (!pressed){
-            return;   
+            return;
         }
         render(ev);
     });
@@ -24,7 +24,7 @@ $(document).ready(function(){
     function render(ev){
         var mouseClick = getMousePosition(ev);
         var path = triangle.getPath;
-        var collision = ctx.isPointInPath(path, mouseClick.x, mouseClick.y)
+        var collision = ctx.isPointInPath(path, mouseClick.x, mouseClick.y);
         if (ev === undefined || collision){
             ctx.clearRect(0, 0, canvasHTML.width, canvasHTML.height);
             triangle.draw();
@@ -33,9 +33,9 @@ $(document).ready(function(){
     }
     
     function drawCircle(ev){
-        var coords; 
+        var coords;
         if (ev === undefined){
-            coords = {x: canvasHTML.width / 2 - offset.left, y: canvasHTML.width / 2 - offset.top};    
+            coords = {x: canvasHTML.width / 2 - offset.left, y: canvasHTML.width / 2 - offset.top};
         } else {
             coords = getMousePosition(ev);
         }
@@ -52,13 +52,13 @@ $(document).ready(function(){
       }
       var coords;
       var offset = $(canvasHTML).offset();
-      if (ev['layerX'] != undefined) {
+      if (ev['layerX'] !== undefined) {
           coords = {
               x: ev.pageX - offset.left,
               y: ev.pageY - offset.top
           };
       }
-      return coords;  
+      return coords;
     }
     
     function Triangle(sideLength, boxSize, pointOneText, pointTwoText, pointThreeText){
@@ -78,7 +78,7 @@ $(document).ready(function(){
           path.moveTo(point1.x, point1.y);
           path.lineTo(point2.x, point2.y);
           path.lineTo(point3.x, point3.y);
-          path.lineTo(point1.x, point1.y); 
+          path.lineTo(point1.x, point1.y);
           return path;
       }();
        
@@ -99,7 +99,7 @@ $(document).ready(function(){
       };
         
       function textMidPoint(text){
-          return ctx.measureText(text).width / 2;      
+          return ctx.measureText(text).width / 2;
       }
         
     }
