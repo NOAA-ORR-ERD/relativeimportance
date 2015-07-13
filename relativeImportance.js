@@ -2,7 +2,7 @@ $(document).ready(function(){
     var canvas = $('#tutorial');
     var canvasHTML = $('#tutorial')[0];
     var ctx = canvasHTML.getContext('2d');
-    var triangle = new Triangle(200, canvasHTML.width);
+    var triangle = new Triangle(200, canvasHTML.width, 'column', 'surface', 'shoreline');
     var pressed = false;
     render();
     
@@ -21,9 +21,8 @@ $(document).ready(function(){
     });
     
     function render(ev){
-        pressed = true;
         var mouseClick = getMousePosition(ev);
-        var path = triangle.getPath();
+        var path = triangle.getPath;
         var collision = ctx.isPointInPath(path, mouseClick.x, mouseClick.y)
         if (ev === undefined || collision){
             ctx.clearRect(0, 0, canvasHTML.width, canvasHTML.height);
@@ -61,31 +60,42 @@ $(document).ready(function(){
       return coords;  
     }
     
-    function Triangle(sideLength, boxSize){
+    function Triangle(sideLength, boxSize, pointOneText, pointTwoText, pointThreeText){
       this.sideLength = sideLength;
       this.boxSize = boxSize;
         
+      var offset = canvas.offset();
+      var triHeight = sideLength * (Math.sqrt(3) / 2);
+      var vertTrans = (boxSize - triHeight) / 2 - offset.top;
+      var horizTrans = (boxSize - sideLength) / 2 - offset.left;
+        
+      var point1 = {x: boxSize / 2 - offset.left, y: vertTrans};
+      var point2 = {x: horizTrans, y: vertTrans + triHeight};
+      var point3 = {x: horizTrans + sideLength, y: vertTrans + triHeight};
+        
       this.getPath = function(){
           var path = new Path2D();
-          var offset = canvas.offset();
-          var triHeight = sideLength * (Math.sqrt(3) / 2);
-          var vertTrans = (boxSize - triHeight) / 2 - offset.top;
-          var horizTrans = (boxSize - sideLength) / 2 - offset.left;
-          var point1 = {x: boxSize / 2 - offset.left, y: vertTrans};
-          var point2 = {x: horizTrans, y: vertTrans + triHeight};
-          var point3 = {x: horizTrans + sideLength, y: vertTrans + triHeight};
           path.moveTo(point1.x, point1.y);
           path.lineTo(point2.x, point2.y);
-          path.lineTo(point3.x,point3.y);
+          path.lineTo(point3.x, point3.y);
           path.lineTo(point1.x, point1.y); 
           return path;
+      }();
+       
+      this.draw = function(){
+          var path = this.getPath;
+          ctx.stroke(path);
+          ctx.closePath();
+          this.drawText();
+      };
+       
+      this.drawText = function(){
+          ctx.font = "14px san-serif";
+          ctx.strokeText(pointOneText, point1.x - 19, point1.y - 10);
+          ctx.strokeText(pointTwoText, point2.x - 15, point2.y + 15);
+          ctx.strokeText(pointThreeText, point3.x - 15, point3.y + 15);
       };
         
-      this.draw = function(){
-          var path = this.getPath();
-          ctx.stroke(path);
-      };
-      
       this.getPoints = function(){
           return this.vertices;
       };
