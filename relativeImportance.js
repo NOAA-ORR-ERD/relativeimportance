@@ -15,14 +15,12 @@ var Triangle = (function(selector, opts){
         });
         this.canvasHTML.addEventListener('mousedown', function(ev){
             Triangle.prototype.draw.call(this, ev);
-            Triangle.prototype.relativeDistances.call(this);
         }.bind(this));
         this.canvasHTML.addEventListener('mousemove', function(ev) {
             if (!pressed){
                 return;
             }
             Triangle.prototype.draw.call(this, ev);
-            Triangle.prototype.relativeDistances.call(this);
         }.bind(this));
       var _Opts = {
           sideLength: 100,
@@ -43,14 +41,16 @@ var Triangle = (function(selector, opts){
       this.vertTrans = (boxSize - triHeight) / 2 - this.offset.top;
       var horizTrans = (boxSize - this.sideLength) / 2 - this.offset.left;
         
-      this.point1 = {x: boxSize / 2 - this.offset.left, y: this.vertTrans, label: _Opts.point1Name};
-      this.point2 = {x: horizTrans, y: this.vertTrans + triHeight, label: _Opts.point2Name};
-      this.point3 = {x: horizTrans + this.sideLength, y: this.vertTrans + triHeight, label: _Opts.point3Name};
+      var point1 = {x: boxSize / 2 - this.offset.left, y: this.vertTrans, label: _Opts.point1Name};
+      var point2 = {x: horizTrans, y: this.vertTrans + triHeight, label: _Opts.point2Name};
+      var point3 = {x: horizTrans + this.sideLength, y: this.vertTrans + triHeight, label: _Opts.point3Name};
+    
+      this.points = [point1, point2, point3];
     });
     
     Triangle.prototype.textMidPoint = function(text){
-        return this.ctx.measureText(text).width / 2;   
-    }
+        return this.ctx.measureText(text).width / 2;
+    };
     
     Triangle.prototype.draw = function(ev){
         var mouseClick = Triangle.prototype.getMousePosition.call(this, ev);
@@ -63,6 +63,7 @@ var Triangle = (function(selector, opts){
             this.drawText();
             this.drawCircle(ev);
          }
+        Triangle.prototype.relativeDistances.call(this);
     };
     
     Triangle.prototype.getMousePosition = function(ev){
@@ -76,8 +77,8 @@ var Triangle = (function(selector, opts){
                   y: ev.pageY - this.offset.top
               };
           }
-          return coords;   
-    }
+          return coords;
+    };
     
     Triangle.prototype.drawCircle = function(ev){
         var coords;
@@ -91,43 +92,56 @@ var Triangle = (function(selector, opts){
         this.ctx.arc(coords.x, coords.y, 5, 0, Math.PI * 2, true);
         this.ctx.closePath();
         this.ctx.fill();
-        this.coords = coords;  
-    }
+        this.coords = coords;
+    };
     
     Triangle.prototype.drawText = function(){
         var scalingFact = 1 / 10;
         var fontSize = (scalingFact * this.sideLength);
         this.ctx.font = fontSize + "px arial";
-        this.ctx.fillText(this.point1.label, this.point1.x - this.textMidPoint(this.point1.label), this.point1.y - fontSize / 2);
-        this.ctx.fillText(this.point2.label, this.point2.x - this.textMidPoint(this.point2.label), this.point2.y + fontSize);
-        this.ctx.fillText(this.point3.label, this.point3.x - this.textMidPoint(this.point3.label), this.point3.y + fontSize);    
-    }
+        this.ctx.fillText(this.points[0].label, this.points[0].x - this.textMidPoint(this.points[0].label), this.points[0].y - fontSize / 2);
+        for (var i = 1; i < this.points.length; i++){
+            this.ctx.fillText(this.points[i].label, this.points[i].x - this.textMidPoint(this.points[i].label), this.points[i].y + fontSize);
+        }
+    };
     
     Triangle.prototype.getPath = function(){
         var path = new Path2D();
-        path.moveTo(this.point1.x, this.point1.y);
-        path.lineTo(this.point2.x, this.point2.y);
-        path.lineTo(this.point3.x, this.point3.y);
-        path.lineTo(this.point1.x, this.point1.y);
-        return path;   
-    }
+        path.moveTo(this.points[0].x, this.points[0].y);
+        for (var i = this.points.length - 1; i > 0; i--){
+            path.lineTo(this.points[i].x, this.points[i].y);
+        }
+        path.lineTo(this.points[0].x, this.points[0].y);
+        return path;
+    };
+    
+    Triangle.prototype.percentDistances = function(){
+        var percents = {};
+        for (var key in this.distances){
+            percents[key] = this.getPercent(this.distances[key]);
+        }
+    };
+    
+    Triangle.prototype.getPercent = function(distance){
+        return (1 - (distance / this.sideLength)) * 100;
+    };
     
     Triangle.prototype.relativeDistances = function(){
-        var points = [this.point1, this.point2, this.point3];
         var distances = {};
-        for (var i = 0; i < points.length; i++){
-            var distance = this.distanceTo(points[i]);
-            distances[points[i].label] = distance;
+        for (var i = 0; i < this.points.length; i++){
+            var distance = this.distanceTo(this.points[i]);
+            distances[this.points[i].label] = distance;
         }
-        console.log(distances);
-    }
+        this.distances = distances;
+        this.percentDistances();
+    };
     
     Triangle.prototype.distanceTo = function(point){
-        return Math.sqrt(Math.pow(point.x - this.coords.x, 2) + Math.pow(point.y - this.coords.y, 2));   
-    }
+        return Math.sqrt(Math.pow(point.x - this.coords.x, 2) + Math.pow(point.y - this.coords.y, 2));
+    };
 
 
-$(document).ready(function(){    
+$(document).ready(function(){
     var triangle = new Triangle('tutorial', {sideLength: 200, point1Name: 'column',point2Name: 'surface', point3Name: 'shoreline'});
     triangle.draw();
 });
