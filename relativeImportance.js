@@ -142,8 +142,3 @@ var Triangle = (function(selector, opts){
     Triangle.prototype.distanceTo = function(point){
         return Math.sqrt(Math.pow(point.x - this.coords.x, 2) + Math.pow(point.y - this.coords.y, 2));
     };
-
-$(document).ready(function(){
-    var triangle = new Triangle('tutorial', {sideLength: 200, point1Name: 'column',point2Name: 'surface', point3Name: 'shoreline'});
-    triangle.draw();
-});
