@@ -1,4 +1,5 @@
-var Triangle = (function(selector, opts){
+define(function(){
+  var Triangle = (function(selector, opts){
         this.canvasHTML = document.getElementById(selector);
         this.ctx = this.canvasHTML.getContext('2d');
         var rect = this.canvasHTML.getBoundingClientRect();
@@ -142,3 +143,6 @@ var Triangle = (function(selector, opts){
     Triangle.prototype.distanceTo = function(point){
         return Math.sqrt(Math.pow(point.x - this.coords.x, 2) + Math.pow(point.y - this.coords.y, 2));
     };
+
+    return Triangle;
+});
