@@ -33,4 +33,4 @@ The code below would generate the following widget in a canvas element with an i
      var triangle = new Triangle('tutorial', {sideLength: 200, point1Name: 'column',point2Name: 'surface', point3Name: 'shoreline'});
      triangle.draw();
 
-!actionshot](./relativeImportance.png "Action Shot")
+![actionshot](./relativeImportance.png "Action Shot")
