@@ -3,7 +3,6 @@ var Triangle = (function(selector, opts){
         this.ctx = this.canvasHTML.getContext('2d');
         var rect = this.canvasHTML.getBoundingClientRect();
         this.offset = {top: rect.top + document.body.scrollTop, left: rect.left + document.body.scrollLeft};
-        console.log(this.offset);
         var boxSize = this.canvasHTML.width;
         var pressed = false;
         
@@ -64,7 +63,7 @@ var Triangle = (function(selector, opts){
             this.drawText();
             this.drawCircle(ev);
          }
-        Triangle.prototype.relativeDistances.call(this);
+        Triangle.prototype.relativeDistances.call(this, ev);
     };
     
     Triangle.prototype.getMousePosition = function(ev){
@@ -118,20 +117,16 @@ var Triangle = (function(selector, opts){
     
     Triangle.prototype.percentDistances = function(){
         var percents = {};
-        var sum = 0;
         for (var key in this.distances){
             percents[key] = this.getPercent(this.distances[key]);
-            sum += this.distances[key];
         }
-        console.log(percents, sum);
     };
     
     Triangle.prototype.getPercent = function(distance){
-        var proportion = (1 - (2 * distance / (this.distancesSum))) * 100;
-        return proportion;// * Math.sqrt(3) / 2))) * 100;   
+        return (1 - (2 * distance / (this.distancesSum))) * 100;
     };
     
-    Triangle.prototype.relativeDistances = function(){
+    Triangle.prototype.relativeDistances = function(ev){
         var distances = {};
         var sum = 0;
         for (var i = 0; i < this.points.length; i++){
@@ -139,8 +134,8 @@ var Triangle = (function(selector, opts){
             distances[this.points[i].label] = distance;
             sum += distance;
         }
-        this.distances = distances;
         this.distancesSum = sum;
+        this.distances = distances;
         this.percentDistances();
     };
     
