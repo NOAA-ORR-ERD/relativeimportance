@@ -5,66 +5,76 @@ define(function(){
         var rect = this.canvasHTML.getBoundingClientRect();
         this.offset = {top: rect.top + document.body.scrollTop, left: rect.left + document.body.scrollLeft};
         var boxSize = this.canvasHTML.width;
-        var pressed = false;
+        this.pressed = false;
         
-        this.canvasHTML.addEventListener('mouseup', function(){
-            pressed = false;
-        });
-    
-        this.canvasHTML.addEventListener('mousedown', function(){
-            pressed = true;
-        });
-        this.canvasHTML.addEventListener('mousedown', function(ev){
-            Triangle.prototype.draw.call(this, ev);
-        }.bind(this));
-        this.canvasHTML.addEventListener('mousemove', function(ev) {
-            if (!pressed){
-                return;
-            }
-            Triangle.prototype.draw.call(this, ev);
-        }.bind(this));
-      var _Opts = {
-          sideLength: 100,
-          point1Name: 'Point 1',
-          point2Name: 'Point 2',
-          point3Name: 'Point 3'
-      };
-      
-      var optsKeys = Object.keys(opts);
-      
-      for (var i = 0; i < optsKeys.length; i++){
-          _Opts[optsKeys[i]] = opts[optsKeys[i]];
-      }
+        var _Opts = {
+            sideLength: 100,
+            point1Name: 'Point 1',
+            point2Name: 'Point 2',
+            point3Name: 'Point 3'
+        };
         
-      this.sideLength = _Opts.sideLength;
-      
-      var triHeight = this.sideLength * (Math.sqrt(3) / 2);
-      this.vertTrans = (boxSize - triHeight) / 2 - this.offset.top;
-      var horizTrans = (boxSize - this.sideLength) / 2 - this.offset.left;
+        var optsKeys = Object.keys(opts);
         
-      var point1 = {x: boxSize / 2 - this.offset.left, y: this.vertTrans, label: _Opts.point1Name};
-      var point2 = {x: horizTrans, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point2Name};
-      var point3 = {x: horizTrans + this.sideLength, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point3Name};
-    
-      this.points = [point1, point2, point3];
+        for (var i = 0; i < optsKeys.length; i++){
+            _Opts[optsKeys[i]] = opts[optsKeys[i]];
+        }
+          
+        this.sideLength = _Opts.sideLength;
+        
+        var triHeight = this.sideLength * (Math.sqrt(3) / 2);
+        this.vertTrans = (boxSize - triHeight) / 2 - this.offset.top;
+        var horizTrans = (boxSize - this.sideLength) / 2 - this.offset.left;
+          
+        var point1 = {x: boxSize / 2 - this.offset.left, y: this.vertTrans, label: _Opts.point1Name};
+        var point2 = {x: horizTrans, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point2Name};
+        var point3 = {x: horizTrans + this.sideLength, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point3Name};
+      
+        this.points = [point1, point2, point3];
+
+        this.path = this.getPath();
     });
     
     Triangle.prototype.textMidPoint = function(text){
         return this.ctx.measureText(text).width / 2;
     };
+
+    Triangle.prototype.addListeners = function(){
+        this.canvasHTML.addEventListener('mouseup', function(){
+            this.pressed = false;
+        }.bind(this));
+    
+        this.canvasHTML.addEventListener('mousedown', function(){
+            this.pressed = true;
+        }.bind(this));
+
+        this.canvasHTML.addEventListener('mousedown', function(ev){
+            Triangle.prototype.draw.call(this, ev);
+        }.bind(this));
+
+        this.canvasHTML.addEventListener('mousemove', function(ev) {
+            if (!this.pressed){
+                return;
+            }
+            Triangle.prototype.draw.call(this, ev);
+        }.bind(this));
+    };
     
     Triangle.prototype.draw = function(ev){
         var mouseClick = Triangle.prototype.getMousePosition.call(this, ev);
-        var path = Triangle.prototype.getPath.call(this);
-        var collision = this.ctx.isPointInPath(path, mouseClick.x, mouseClick.y);
+        console.log(this.points);
+        var collision = this.ctx.isPointInPath(this.path, mouseClick.x, mouseClick.y);
         if (ev === undefined || collision){
             this.ctx.clearRect(0, 0, this.canvasHTML.width, this.canvasHTML.height);
-            this.ctx.stroke(path);
+            this.ctx.stroke(this.path);
             this.ctx.closePath();
             this.drawText();
             this.drawCircle(ev);
          }
         Triangle.prototype.relativeDistances.call(this, ev);
+        if (ev === undefined){
+          Triangle.prototype.addListeners.call(this);
+        }
     };
     
     Triangle.prototype.getMousePosition = function(ev){
@@ -72,10 +82,16 @@ define(function(){
               return {x: 0, y: 0};
           }
           var coords;
+          console.log(ev);
           if (ev['layerX'] !== undefined) {
               coords = {
-                  x: ev.pageX - this.offset.left,
-                  y: ev.pageY - this.offset.top
+                  x: ev.layerX - this.offset.left,
+                  y: ev.layerY - this.offset.top
+              };
+          } else {
+              coords = {
+                x: ev.x,
+                y: ev.y
               };
           }
           return coords;
