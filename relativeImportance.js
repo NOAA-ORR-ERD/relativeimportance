@@ -62,7 +62,6 @@ define(function(){
     
     Triangle.prototype.draw = function(ev){
         var mouseClick = Triangle.prototype.getMousePosition.call(this, ev);
-        console.log(this.points);
         var collision = this.ctx.isPointInPath(this.path, mouseClick.x, mouseClick.y);
         if (ev === undefined || collision){
             this.ctx.clearRect(0, 0, this.canvasHTML.width, this.canvasHTML.height);
@@ -82,7 +81,6 @@ define(function(){
               return {x: 0, y: 0};
           }
           var coords;
-          console.log(ev);
           if (ev['layerX'] !== undefined) {
               coords = {
                   x: ev.layerX - this.offset.left,
