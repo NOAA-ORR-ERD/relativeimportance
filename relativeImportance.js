@@ -9,26 +9,36 @@ define(function(){
         
         var _Opts = {
             sideLength: 100,
-            point1Name: 'Point 1',
-            point2Name: 'Point 2',
-            point3Name: 'Point 3'
+            point1: {label: 'Point 1', color: '#EDC240'},
+            point2: {label: 'Point 2', color: '#CB4B4B'},
+            point3: {label: 'Point 3', color: '#AFD8F8'},
+            callback: null
         };
         
         var optsKeys = Object.keys(opts);
         
         for (var i = 0; i < optsKeys.length; i++){
-            _Opts[optsKeys[i]] = opts[optsKeys[i]];
+            if (typeof opts[optsKeys[i]] !== 'object'){
+                _Opts[optsKeys[i]] = opts[optsKeys[i]];
+            } else if (opts[optsKeys[i]] !== null){
+                for (var key in opts[optsKeys[i]]){
+                    if (opts[optsKeys[i]][key] !== undefined){
+                        _Opts[optsKeys[i]][key] = opts[optsKeys[i]][key];
+                    }
+                }
+            }
         }
           
         this.sideLength = _Opts.sideLength;
+        this.callback = _Opts.callback;
         
         var triHeight = this.sideLength * (Math.sqrt(3) / 2);
         this.vertTrans = (boxSize - triHeight) / 2 - this.offset.top;
         var horizTrans = (boxSize - this.sideLength) / 2 - this.offset.left;
           
-        var point1 = {x: boxSize / 2 - this.offset.left, y: this.vertTrans, label: _Opts.point1Name};
-        var point2 = {x: horizTrans, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point2Name};
-        var point3 = {x: horizTrans + this.sideLength, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point3Name};
+        var point1 = {x: boxSize / 2 - this.offset.left, y: this.vertTrans, label: _Opts.point1.label, color: _Opts.point1.color};
+        var point2 = {x: horizTrans, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point2.label, color: _Opts.point2.color};
+        var point3 = {x: horizTrans + this.sideLength, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point3.label, color: _Opts.point3.color};
       
         this.points = [point1, point2, point3];
 
@@ -65,6 +75,7 @@ define(function(){
         var collision = this.ctx.isPointInPath(this.path, mouseClick.x, mouseClick.y);
         if (ev === undefined || collision){
             this.ctx.clearRect(0, 0, this.canvasHTML.width, this.canvasHTML.height);
+            Triangle.prototype.applyPointGradients.call(this, ev);
             this.ctx.stroke(this.path);
             this.ctx.closePath();
             this.drawText();
@@ -76,6 +87,18 @@ define(function(){
         }
     };
     
+    Triangle.prototype.applyPointGradients = function(ev){
+        var radius = this.sideLength * (Math.sqrt(3) / 3);
+        for (var i = 0; i < this.points.length; i++){
+            var point = this.points[i];
+            var gradient = this.ctx.createRadialGradient(point.x, point.y, radius, point.x, point.y, radius);
+            gradient.addColorStop(0, "white");
+            gradient.addColorStop(1, point.color);
+            this.ctx.fillStyle = gradient;
+            this.ctx.fill(this.path);
+        }
+    };
+
     Triangle.prototype.getMousePosition = function(ev){
         if (ev === undefined){
               return {x: 0, y: 0};
@@ -134,6 +157,10 @@ define(function(){
         var percents = {};
         for (var key in this.distances){
             percents[key] = this.getPercent(this.distances[key]);
+        }
+        
+        if (this.callback !== null){
+          this.callback(percents);
         }
     };
     
