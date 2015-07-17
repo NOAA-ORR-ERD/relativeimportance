@@ -77,7 +77,7 @@ define(function(){
             this.ctx.clearRect(0, 0, this.canvasHTML.width, this.canvasHTML.height);
             Triangle.prototype.applyPointGradients.call(this, ev);
             this.ctx.stroke(this.path);
-            this.ctx.closePath();
+            this.ctx.fillStyle = 'black';
             this.drawText();
             this.drawCircle(ev);
          }
@@ -91,11 +91,14 @@ define(function(){
         var radius = this.sideLength * (Math.sqrt(3) / 3);
         for (var i = 0; i < this.points.length; i++){
             var point = this.points[i];
-            var gradient = this.ctx.createRadialGradient(point.x, point.y, radius, point.x, point.y, radius);
+            var gradient = this.ctx.createRadialGradient(point.x, point.y, radius, point.x, point.y, 0);
             gradient.addColorStop(0, "white");
             gradient.addColorStop(1, point.color);
             this.ctx.fillStyle = gradient;
-            this.ctx.fill(this.path);
+            this.ctx.beginPath();
+            this.ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+            this.ctx.closePath();
+            this.ctx.fill();
         }
     };
 
