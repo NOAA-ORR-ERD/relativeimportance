@@ -91,14 +91,17 @@ define(function(){
         var radius = this.sideLength * (Math.sqrt(3) / 3);
         for (var i = 0; i < this.points.length; i++){
             var point = this.points[i];
-            var gradient = this.ctx.createRadialGradient(point.x, point.y, radius, point.x, point.y, 0);
-            gradient.addColorStop(0, "white");
+            var gradient = this.ctx.createRadialGradient(point.x, point.y, 2 * radius, point.x, point.y, 0);
+            gradient.addColorStop(0, 'rgba(255,255,255,0)');
             gradient.addColorStop(1, point.color);
             this.ctx.fillStyle = gradient;
+            this.ctx.save();
             this.ctx.beginPath();
-            this.ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+            this.ctx.arc(point.x, point.y, 2 * radius, 0, 2 * Math.PI);
+            this.ctx.clip(this.path);
             this.ctx.closePath();
             this.ctx.fill();
+            this.ctx.restore();
         }
     };
 
@@ -159,7 +162,7 @@ define(function(){
     Triangle.prototype.percentDistances = function(){
         var percents = {};
         for (var key in this.distances){
-            percents[key] = this.getPercent(this.distances[key]);
+            percents[key] = {data: this.getPercent(this.distances[key].data), color: this.distances[key].color};
         }
         
         if (this.callback !== null){
@@ -176,7 +179,7 @@ define(function(){
         var sum = 0;
         for (var i = 0; i < this.points.length; i++){
             var distance = this.distanceTo(this.points[i]);
-            distances[this.points[i].label] = distance;
+            distances[this.points[i].label] = {data: distance, color: this.points[i].color};
             sum += distance;
         }
         this.distancesSum = sum;
