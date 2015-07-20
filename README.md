@@ -22,15 +22,16 @@ This widget contains a class called Triangle which its constructor takes two arg
 The options available for the options hash are:
 
 * sideLength: Sets how long each side will be in terms of pixels
-* point1Name: Labels the first point which is the top point
-* point2Name: Labels the second point which is in the lower left
-* point3Name: Labels the third point which is in the lower right
+* point1: {label: Labels the first point which is the top point, color: Color of the point's radial gradient}
+* point2: {label: Labels the second point which is in the lower left, color: Color of the point's radial gradient}
+* point3: {label: Labels the third point which is in the lower right, color: Color of the point's radial gradient}
+* callback: Function that gets the distance percents passed in as the first parameter
 
 ####Example with picture
 
 The code below would generate the following widget in a canvas element with an id of "tutorial", where its width and height are both set at 300px.
 
-     var triangle = new Triangle('tutorial', {sideLength: 200, point1Name: 'column',point2Name: 'surface', point3Name: 'shoreline'});
+     var triangle = new Triangle('tutorial', {sideLength: 200, point1: {label: 'column', color: '#EDC240'}, point2: {label: 'surface', color: '#CB4B4B'}, point3: {label: 'shoreline', color: '#AFD8F8'}, callback: dataOutputter);
      triangle.draw();
 
 ![actionshot](./relativeImportance.png "Action Shot")
