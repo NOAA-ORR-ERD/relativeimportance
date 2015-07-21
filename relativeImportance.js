@@ -93,6 +93,7 @@ define(function(){
             var point = this.points[i];
             var gradient = this.ctx.createRadialGradient(point.x, point.y, 2 * radius, point.x, point.y, 0);
             gradient.addColorStop(0, 'rgba(255,255,255,0)');
+            gradient.addColorStop(0.75, point.color);
             gradient.addColorStop(1, point.color);
             this.ctx.fillStyle = gradient;
             this.ctx.save();
