@@ -36,7 +36,7 @@ define(function(){
         this.vertTrans = ((boxSize - triHeight) / 2) - this.offset.top;
         var horizTrans = ((boxSize - this.sideLength) / 2) - this.offset.left;
           
-        var point1 = {x: boxSize / 2 - this.offset.left, y: this.vertTrans, label: _Opts.point1.label, color: _Opts.point1.color};
+        var point1 = {x: boxSize / 2 - this.offset.left, y: this.vertTrans + this.offset.top, label: _Opts.point1.label, color: _Opts.point1.color};
         var point2 = {x: horizTrans, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point2.label, color: _Opts.point2.color};
         var point3 = {x: horizTrans + this.sideLength, y: this.vertTrans + triHeight + this.offset.top, label: _Opts.point3.label, color: _Opts.point3.color};
       
