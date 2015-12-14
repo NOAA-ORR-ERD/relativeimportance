@@ -31,7 +31,7 @@ The options available for the options hash are:
 
 The code below would generate the following widget in a canvas element with an id of "tutorial", where its width and height are both set at 300px.
 
-     var triangle = new Triangle('tutorial', {sideLength: 200, point1: {label: 'column', color: '#EDC240'}, point2: {label: 'surface', color: '#CB4B4B'}, point3: {label: 'shoreline', color: '#AFD8F8'}, callback: dataOutputter);
+     var triangle = new Triangle('tutorial', {sideLength: 200, point1: {label: 'column', color: '#EDC240'}, point2: {label: 'surface', color: '#CB4B4B'}, point3: {label: 'shoreline', color: '#AFD8F8'}, callback: dataOutputter});
      triangle.draw();
 
 ![actionshot](./relativeImportance.png "Action Shot")
