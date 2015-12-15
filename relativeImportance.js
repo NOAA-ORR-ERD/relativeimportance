@@ -113,8 +113,8 @@ define(function(){
           var coords;
           if (ev['layerX'] !== undefined) {
               coords = {
-                  x: ev.layerX - this.offset.left,
-                  y: ev.layerY - this.offset.top
+                  x: ev.layerX,
+                  y: ev.layerY
               };
           } else {
               coords = {
@@ -127,9 +127,9 @@ define(function(){
     
     Triangle.prototype.drawCircle = function(ev){
         var coords;
-        var initialY = this.vertTrans + this.sideLength * (Math.sqrt(3) / 3) + this.offset.top;
+        var initialY = this.vertTrans + this.sideLength * (Math.sqrt(3) / 3);
         if (ev === undefined){
-              coords = {x: this.canvasHTML.width / 2 - this.offset.left, y: initialY};
+              coords = {x: this.canvasHTML.width / 2, y: initialY};
         } else {
             coords = Triangle.prototype.getMousePosition.call(this, ev);
         }
